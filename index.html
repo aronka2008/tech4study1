@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vélemények Gyűjtése</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #0073e6;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #0073e6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        button.active {
+            background-color: #003d7a; /* Gomb színe kattintáskor */
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="logo_teljes.png" alt="Példa kép" width="300">
+
+    <form id="feedbackForm" onsubmit="handleSubmit(event)">
+        <label for="name">Név:</label>
+        <input type="text" id="name" name="name" required>
+
+        <p>Mennyire volt elégedett az ügyintézéssel?</p>
+        <div>
+            <button type="button" onclick="selectButton(1, 'q1', this)">Nagyon! 😊</button>
+            <button type="button" onclick="selectButton(2, 'q1', this)">Inkább igen 🙂</button>
+            <button type="button" onclick="selectButton(3, 'q1', this)">Inkább nem 🙁</button>
+            <button type="button" onclick="selectButton(4, 'q1', this)">Egyáltalán nem 😠</button>
+        </div>
+
+        <p>Megfelelőnek találta a bejelentésére adott válaszunkat, megoldásunkat?</p>
+        <div>
+            <button type="button" onclick="selectButton(1, 'q2', this)">Nagyon! 😊</button>
+            <button type="button" onclick="selectButton(2, 'q2', this)">Inkább igen 🙂</button>
+            <button type="button" onclick="selectButton(3, 'q2', this)">Inkább nem 🙁</button>
+            <button type="button" onclick="selectButton(4, 'q2', this)">Egyáltalán nem 😠</button>
+        </div>
+
+        <p>Mennyire találta segítőkésznek ügyintézönk hozzáállását?</p>
+        <div>
+            <button type="button" onclick="selectButton(1, 'q3', this)">Nagyon! 😊</button>
+            <button type="button" onclick="selectButton(2, 'q3', this)">Inkább igen 🙂</button>
+            <button type="button" onclick="selectButton(3, 'q3', this)">Inkább nem 🙁</button>
+            <button type="button" onclick="selectButton(4, 'q3', this)">Egyáltalán nem 😠</button>
+        </div>
+
+        <button type="submit" id="submitBtn" class="hidden">Küldés</button>
+    </form>
+
+    <script>
+        let answers = {
+            q1: null,
+            q2: null,
+            q3: null
+        };
+
+        function selectButton(value, question, btn) {
+            // Menti a választ a megfelelő kérdéshez
+            answers[question] = value;
+
+            // Az összes gombot reseteljük az aktív állapotból a kiválasztott kérdésnél
+            const buttons = document.querySelectorAll(`button[onclick*="${question}"]`);
+            buttons.forEach(button => {
+                button.classList.remove('active'); // Az aktív osztály eltávolítása
+            });
+
+            // Beállítjuk az aktív osztályt a kiválasztott gombra
+            btn.classList.add('active');
+
+            // Ellenőrzi, hogy mindhárom kérdéshez van-e választás
+            if (answers.q1 && answers.q2 && answers.q3) {
+                document.getElementById('submitBtn').classList.remove('hidden'); // Megjeleníti a "Küldés" gombot
+            }
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault(); // Megakadályozza az űrlap alapértelmezett küldését
+            
+            // Ellenőrzi, hogy mindhárom kérdés megválaszolásra került-e
+            if (!answers.q1 || !answers.q2 || !answers.q3) {
+                alert("Kérjük, válaszoljon mindhárom kérdésre a küldés előtt.");
+                return;
+            }
+
+            const name = document.getElementById('name').value;
+
+            // Új oldal megnyitása a köszönetnyilvánítással
+            const newWindow = window.open("", "_blank");
+            newWindow.document.write("<!DOCTYPE html><html lang='hu'><head><meta charset='UTF-8'><title>Köszönet</title></head><body>");
+            newWindow.document.write("<h1>Köszönjük!</h1>");
+            newWindow.document.write("<p>Köszönjük, hogy értékes véleményével hozzájárult konferenciánk színvonalának növeléséhez!</p>");
+            newWindow.document.write("</body></html>");
+            newWindow.document.close(); // Az új ablak bezárása
+        }
+    </script>
+
+</body>
+</html>
